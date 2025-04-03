@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #
     "products.apps.ProductsConfig",
     "accounts.apps.AccountsConfig",
+    "users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
@@ -127,5 +128,5 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# LOGIN_REDIRECT_URL = reverse_lazy("")
+LOGIN_REDIRECT_URL = reverse_lazy("users:index")
 LOGIN_URL = reverse_lazy("accounts:login")
