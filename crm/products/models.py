@@ -17,8 +17,4 @@ class Product(models.Model):
     )
 
     def __str__(self):
-        return "Product(pk={}, {!r} - {}руб)".format(
-            self.pk,
-            self.name,
-            self.price,
-        )
+        return f"Product(pk={self.pk}, {self.name!r} -- {self.price:,.2f} руб)"

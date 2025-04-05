@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views import View
 
 from accounts.forms import CustomAuthenticationForm
@@ -8,9 +9,7 @@ from accounts.forms import CustomAuthenticationForm
 
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
-    success_url = (
-        ""  # TODO: Написать url (возможно нужно написать LOGIN_REDIRECT_URL в settings)
-    )
+    success_url = reverse_lazy("users:index")
 
 
 class CustomLogoutView(View):

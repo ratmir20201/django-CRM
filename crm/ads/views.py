@@ -40,7 +40,7 @@ class AdsUpdateView(LoginRequiredMixin, UpdateView):
         return reverse("ads:ads_details", kwargs={"pk": self.object.pk})
 
 
-class AdsDeleteView(DeleteView):
+class AdsDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "ads/ads-delete.html"
     model = Ads
     success_url = reverse_lazy("ads:ads_list")
