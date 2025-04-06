@@ -7,9 +7,16 @@ from django.views.generic import (
     DeleteView,
     DetailView,
 )
+from rest_framework.viewsets import ModelViewSet
 
 from ads.forms import AdsForm
 from ads.models import Ads
+from ads.serializers import AdsSerializer
+
+
+class AdsViewSet(ModelViewSet):
+    queryset = Ads.objects.all()
+    serializer_class = AdsSerializer
 
 
 class AdsListView(LoginRequiredMixin, ListView):
