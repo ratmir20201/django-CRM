@@ -7,9 +7,16 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from rest_framework.viewsets import ModelViewSet
 
 from products.forms import ProductForm
 from products.models import Product
+from products.serializers import ProductSerializer
+
+
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):

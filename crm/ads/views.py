@@ -14,7 +14,7 @@ from ads.models import Ads
 
 class AdsListView(LoginRequiredMixin, ListView):
     template_name = "ads/ads-list.html"
-    model = Ads
+    queryset = Ads.objects.select_related("product")
     context_object_name = "ads"
 
 
