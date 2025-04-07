@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "users.apps.UsersConfig",
     "ads.apps.AdsConfig",
+    "leads.apps.LeadsConfig",
 ]
 
 MIDDLEWARE = [
