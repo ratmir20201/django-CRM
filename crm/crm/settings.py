@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #
     "rest_framework",
+    "drf_spectacular",
     #
     "products.apps.ProductsConfig",
     "accounts.apps.AccountsConfig",
@@ -138,4 +139,12 @@ LOGIN_URL = reverse_lazy("accounts:login")
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "CRM API",
+    "DESCRIPTION": "Документация для API CRM-системы",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
