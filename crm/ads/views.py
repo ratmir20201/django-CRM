@@ -123,7 +123,7 @@ class AdsUpdateView(LoginRequiredMixin, UpdateView):
     form_class = AdsForm
 
     def get_success_url(self):
-        return reverse("ads:ads_details", kwargs={"pk": self.object.pk})
+        return reverse("ads:ads_detail", kwargs={"pk": self.object.pk})
 
 
 class AdsDeleteView(LoginRequiredMixin, DeleteView):

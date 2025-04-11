@@ -6,9 +6,11 @@ from leads.models import Lead
 class LeadForm(forms.ModelForm):
     class Meta:
         model = Lead
-        fields = "user", "phone", "ad"
+        fields = "first_name", "last_name", "phone", "email", "ad"
         labels = {
-            "user": "Пользователь",
-            "phone": "Описание",
+            "first_name": "Имя",
+            "last_name": "Фамилия",
+            "phone": "Номер телефона",
+            "email": "Email",
             "ad": "Рекламная компания",
         }
