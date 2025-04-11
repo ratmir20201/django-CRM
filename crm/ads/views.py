@@ -19,7 +19,7 @@ from ads.serializers import AdsSerializer
 class AdsViewSet(ModelViewSet):
     """API для управления рекламными кампаниями."""
 
-    queryset = Ads.objects.all()
+    queryset = Ads.objects.select_related("product").all()
     serializer_class = AdsSerializer
 
     @extend_schema(
@@ -80,7 +80,7 @@ class AdsListView(LoginRequiredMixin, ListView):
     """
 
     template_name = "ads/ads-list.html"
-    queryset = Ads.objects.select_related("product")
+    queryset = Ads.objects.select_related("product").all()
     context_object_name = "ads"
 
 
