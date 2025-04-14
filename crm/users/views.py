@@ -15,6 +15,6 @@ class MainTitleView(LoginRequiredMixin, TemplateView):
         context["products_count"] = Product.objects.count()
         context["advertisements_count"] = Ads.objects.count()
         context["advertisements_count"] = Ads.objects.count()
-        context["leads_count"] = Lead.objects.count()
+        context["leads_count"] = Lead.objects.filter(is_active=False).count()
         context["customers_count"] = Customer.objects.count()
         return context

@@ -19,7 +19,7 @@ from leads.serializers import LeadSerializer
 class LeadViewSet(ModelViewSet):
     """API для управления потенциальными клиентами (lead)."""
 
-    queryset = Lead.objects.select_related("ad").all()
+    queryset = Lead.objects.select_related("ad").filter(is_active=False).all()
     serializer_class = LeadSerializer
 
     @extend_schema(
@@ -123,7 +123,7 @@ class LeadsListView(LoginRequiredMixin, ListView):
     """
 
     template_name = "leads/leads-list.html"
-    model = Lead
+    queryset = Lead.objects.select_related("ad").filter(is_active=False).all()
     context_object_name = "leads"
 
 

@@ -107,6 +107,16 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
     form_class = CustomerForm
     success_url = reverse_lazy("customers:customers_list")
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        lead = form.cleaned_data.get("lead")
+        if lead:
+            lead.is_active = True
+            lead.save()
+
+        return response
+
 
 class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     """
@@ -121,7 +131,23 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CustomerForm
 
     def get_success_url(self):
-        return reverse("customers:customers_detail", kwargs={"pk": self.object.pk})
+        return reverse("customers:customer_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        old_lead = self.get_object().lead
+        new_lead = form.cleaned_data.get("lead")
+
+        if old_lead != new_lead:
+            if old_lead:
+                old_lead.is_active = False
+                old_lead.save()
+            if new_lead:
+                new_lead.is_active = True
+                new_lead.save()
+
+        return response
 
 
 class CustomerDeleteView(LoginRequiredMixin, DeleteView):
@@ -135,3 +161,13 @@ class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "customers/customers-delete.html"
     model = Customer
     success_url = reverse_lazy("customers:customers_list")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        lead = form.cleaned_data.get("lead")
+        if lead:
+            lead.is_active = False
+            lead.save()
+
+        return response

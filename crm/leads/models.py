@@ -19,6 +19,10 @@ class Lead(models.Model):
         blank=True,
         verbose_name="Рекламная компания",
     )
+    is_active = models.BooleanField(
+        default=False,
+        verbose_name="Является ли клиент активным",
+    )
 
     def __str__(self):
         return f"Lead(pk={self.pk}, name={self.last_name} {self.first_name})"
