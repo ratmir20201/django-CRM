@@ -110,11 +110,16 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        # TODO: Добавить дополнительное поле is_signed модели Contract для удаления его из пула
         lead = form.cleaned_data.get("lead")
+        contract = form.cleaned_data.get("contract")
+
         if lead:
             lead.is_active = True
             lead.save()
+
+        if contract:
+            contract.is_signed = True
+            contract.save()
 
         return response
 
@@ -138,7 +143,9 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
 
         old_lead = self.get_object().lead
+        old_contract = self.get_object().contract
         new_lead = form.cleaned_data.get("lead")
+        new_contract = form.cleaned_data.get("contract")
 
         if old_lead != new_lead:
             if old_lead:
@@ -147,6 +154,14 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
             if new_lead:
                 new_lead.is_active = True
                 new_lead.save()
+
+        if old_contract != new_contract:
+            if old_contract:
+                old_contract.is_signed = False
+                old_contract.save()
+            if new_contract:
+                new_contract.is_signed = True
+                new_contract.save()
 
         return response
 
@@ -167,8 +182,14 @@ class CustomerDeleteView(LoginRequiredMixin, DeleteView):
         response = super().form_valid(form)
 
         lead = form.cleaned_data.get("lead")
+        contract = form.cleaned_data.get("contract")
+
         if lead:
-            lead.is_active = False
+            lead.is_active = True
             lead.save()
+
+        if contract:
+            contract.is_signed = True
+            contract.save()
 
         return response

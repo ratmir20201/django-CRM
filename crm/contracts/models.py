@@ -28,6 +28,10 @@ class Contract(models.Model):
         decimal_places=2,
         verbose_name="Сумма (в руб)",
     )
+    is_signed = models.BooleanField(
+        default=False,
+        verbose_name="Является ли контракт подписанным",
+    )
 
     def __str__(self):
         return (

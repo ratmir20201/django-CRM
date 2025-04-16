@@ -1,5 +1,5 @@
 from products.models import Product
-from tests.fixtures.one_test_product import test_product_data
+from tests.fixtures.test_data import test_product_data
 from tests.test_utils.auth import LoginRequiredTestsMixin
 
 
