@@ -3,12 +3,10 @@ from http import HTTPStatus
 from django.urls import reverse
 
 from products.models import Product
-from tests.fixtures.test_data import test_product_data
-from tests.test_utils.auth import LoginRequiredTestsMixin
-from tests.test_utils.product_with_test_data import ProductTestBase
+from tests.factories.test_data_factory import TestDataFactory
 
 
-class ProductCreateViewTestCase(LoginRequiredTestsMixin):
+class ProductCreateViewTestCase(TestDataFactory):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -18,14 +16,19 @@ class ProductCreateViewTestCase(LoginRequiredTestsMixin):
         self.assert_login_required()
 
     def test_product_create(self):
-        response = self.client.post(path=self.url, data=test_product_data)
+        data = {
+            "name": "TestServiceCreate",
+            "description": "Test description for TestServiceCreate.",
+            "price": "1000.00",
+        }
+        response = self.client.post(path=self.url, data=data)
 
         self.assertRedirects(response, reverse("products:products_list"))
         self.assertTrue(
             Product.objects.filter(
-                name=test_product_data["name"],
-                description=test_product_data["description"],
-                price=test_product_data["price"],
+                name=data["name"],
+                description=data["description"],
+                price=data["price"],
             ).exists()
         )
 
@@ -35,7 +38,7 @@ class ProductCreateViewTestCase(LoginRequiredTestsMixin):
         self.assertTemplateUsed(response, "products/products-create.html")
 
 
-class ProductUpdateViewTestCase(ProductTestBase):
+class ProductUpdateViewTestCase(TestDataFactory):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -46,7 +49,7 @@ class ProductUpdateViewTestCase(ProductTestBase):
 
     def test_product_update(self):
         new_data = {
-            "name": "Updated Name",
+            "name": "UpdatedService",
             "description": "Updated description",
             "price": "2000.00",
         }
@@ -60,9 +63,9 @@ class ProductUpdateViewTestCase(ProductTestBase):
         )
 
         self.test_product.refresh_from_db()
-        self.assertEqual(self.test_product.name, "Updated Name")
-        self.assertEqual(self.test_product.description, "Updated description")
-        self.assertEqual(str(self.test_product.price), "2000.00")
+        self.assertEqual(self.test_product.name, new_data["name"])
+        self.assertEqual(self.test_product.description, new_data["description"])
+        self.assertEqual(str(self.test_product.price), new_data["price"])
 
     def test_get_product_form(self):
         response = self.client.get(self.url)

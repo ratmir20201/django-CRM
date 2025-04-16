@@ -3,12 +3,10 @@ from http import HTTPStatus
 from django.urls import reverse
 
 from products.models import Product
-from tests.test_utils.auth import LoginRequiredTestsMixin
-from tests.test_utils.product_with_test_data import ProductTestBase
+from tests.factories.test_data_factory import TestDataFactory
 
 
-class ProductsListViewTestCase(LoginRequiredTestsMixin):
-    fixtures = ["test_products.json"]
+class ProductsListViewTestCase(TestDataFactory):
 
     @classmethod
     def setUpClass(cls):
@@ -30,7 +28,7 @@ class ProductsListViewTestCase(LoginRequiredTestsMixin):
         self.assertTemplateUsed(response, "products/products-list.html")
 
 
-class ProductDetailViewTestCase(ProductTestBase):
+class ProductDetailViewTestCase(TestDataFactory):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -3,10 +3,10 @@ from http import HTTPStatus
 from django.urls import reverse
 
 from products.models import Product
-from tests.test_utils.product_with_test_data import ProductTestBase
+from tests.factories.test_data_factory import TestDataFactory
 
 
-class ProductDeleteViewTestCase(ProductTestBase):
+class ProductDeleteViewTestCase(TestDataFactory):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
