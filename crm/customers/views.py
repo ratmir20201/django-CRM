@@ -110,6 +110,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
+        # TODO: Добавить дополнительное поле is_signed модели Contract для удаления его из пула
         lead = form.cleaned_data.get("lead")
         if lead:
             lead.is_active = True

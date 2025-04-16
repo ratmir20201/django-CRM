@@ -9,13 +9,13 @@ class Customer(models.Model):
         Lead,
         on_delete=models.CASCADE,
         verbose_name="Потенциальный клиент",
-        related_name="active_client",
+        related_name="customer",
     )
     contract = models.OneToOneField(
         Contract,
         on_delete=models.CASCADE,
         verbose_name="Контракт",
-        related_name="active_client",
+        related_name="customer",
     )
 
     def __str__(self):

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -14,6 +15,9 @@ from rest_framework.viewsets import ModelViewSet
 from ads.forms import AdsForm
 from ads.models import Ads
 from ads.serializers import AdsSerializer
+from contracts.models import Contract
+from customers.models import Customer
+from leads.models import Lead
 
 
 class AdsViewSet(ModelViewSet):
@@ -137,3 +141,35 @@ class AdsDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "ads/ads-delete.html"
     model = Ads
     success_url = reverse_lazy("ads:ads_list")
+
+
+class AdsStatisticView(LoginRequiredMixin, ListView):
+    """
+    Представление для отображения статистики об успешности рекламных кампаний.
+
+    Доступно только для авторизованных пользователей.
+    """
+
+    template_name = "ads/ads-statistic.html"
+    queryset = Ads.objects.select_related("product").all()
+    context_object_name = "ads"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ads = context["ads"]
+
+        for ad in ads:
+            ad.leads_count = Lead.objects.filter(is_active=False, ad=ad).count()
+            ad.customers_count = Customer.objects.filter(lead__ad=ad).count()
+
+            contracts_summ = (
+                Contract.objects.filter(customer__lead__ad=ad)
+                .aggregate(total=Sum("cost"))
+                .get("total")
+            )
+            if contracts_summ:
+                ad.profit = round(contracts_summ / ad.budget, 2)
+            else:
+                ad.profit = 0
+
+        return context

@@ -8,6 +8,7 @@ from ads.views import (
     AdsUpdateView,
     AdsDeleteView,
     AdsViewSet,
+    AdsStatisticView,
 )
 
 app_name = "ads"
@@ -17,6 +18,7 @@ routers.register("", AdsViewSet)
 
 urlpatterns = [
     path("", AdsListView.as_view(), name="ads_list"),
+    path("statistic/", AdsStatisticView.as_view(), name="ads_statistic"),
     path("api/", include(routers.urls)),
     path("new/", AdsCreateView.as_view(), name="ads_create"),
     path("<int:pk>/", AdsDetailView.as_view(), name="ads_detail"),
