@@ -185,11 +185,11 @@ class CustomerDeleteView(LoginRequiredMixin, DeleteView):
         contract = form.cleaned_data.get("contract")
 
         if lead:
-            lead.is_active = True
+            lead.is_active = False
             lead.save()
 
         if contract:
-            contract.is_signed = True
+            contract.is_signed = False
             contract.save()
 
         return response

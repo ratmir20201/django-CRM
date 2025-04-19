@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from django.urls import reverse
 
-from products.models import Product
+from ads.models import Ads
 from tests.factories.test_data_factory import TestDataFactory
 
 
@@ -18,7 +18,7 @@ class AdCreateViewTestCase(TestDataFactory):
     def test_ad_create(self):
         data = {
             "name": "TestAdCreate",
-            "product": self.test_product,
+            "product": self.test_product.id,
             "channel": "YouTube",
             "budget": "5000.00",
         }
@@ -26,7 +26,7 @@ class AdCreateViewTestCase(TestDataFactory):
 
         self.assertRedirects(response, reverse("ads:ads_list"))
         self.assertTrue(
-            Product.objects.filter(
+            Ads.objects.filter(
                 name=data["name"],
                 product=data["product"],
                 channel=data["channel"],
@@ -52,7 +52,7 @@ class AdUpdateViewTestCase(TestDataFactory):
     def test_ad_update(self):
         new_data = {
             "name": "NewTestAd",
-            "product": self.test_product_2,
+            "product": self.test_product_2.id,
             "channel": "YouTube",
             "budget": "11000.00",
         }
@@ -67,7 +67,7 @@ class AdUpdateViewTestCase(TestDataFactory):
 
         self.test_ad.refresh_from_db()
         self.assertEqual(self.test_ad.name, new_data["name"])
-        self.assertEqual(self.test_ad.product, new_data["product"])
+        self.assertEqual(self.test_ad.product.id, new_data["product"])
         self.assertEqual(self.test_ad.channel, new_data["channel"])
         self.assertEqual(str(self.test_ad.budget), new_data["budget"])
 
