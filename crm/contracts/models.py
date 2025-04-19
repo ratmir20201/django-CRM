@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.utils import timezone
 
@@ -32,6 +34,12 @@ class Contract(models.Model):
         default=False,
         verbose_name="Является ли контракт подписанным",
     )
+
+    def delete(self, *args, **kwargs):
+        """Удаляет файл с диска перед удалением объекта."""
+        if self.document and os.path.isfile(self.document.path):
+            os.remove(self.document.path)
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return (
