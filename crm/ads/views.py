@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Sum
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
@@ -76,31 +76,33 @@ class AdsViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class AdsListView(LoginRequiredMixin, ListView):
+class AdsListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Представление для отображения списка всех рекламных кампаний.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "ads.view_ads"
     template_name = "ads/ads-list.html"
     queryset = Ads.objects.select_related("product").all()
     context_object_name = "ads"
 
 
-class AdsDetailView(LoginRequiredMixin, DetailView):
+class AdsDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """
     Представление для отображения детальной информации о рекламной кампании.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "ads.view_ads"
     template_name = "ads/ads-detail.html"
     model = Ads
     context_object_name = "object"
 
 
-class AdsCreateView(LoginRequiredMixin, CreateView):
+class AdsCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Представление для создания новой рекламной кампании.
 
@@ -108,13 +110,14 @@ class AdsCreateView(LoginRequiredMixin, CreateView):
     После успешного создания перенаправляет на список всех рекламных кампаний.
     """
 
+    permission_required = "ads.add_ads"
     template_name = "ads/ads-create.html"
     model = Ads
     form_class = AdsForm
     success_url = reverse_lazy("ads:ads_list")
 
 
-class AdsUpdateView(LoginRequiredMixin, UpdateView):
+class AdsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Представление для редактирования существующей рекламной кампании.
 
@@ -122,6 +125,7 @@ class AdsUpdateView(LoginRequiredMixin, UpdateView):
     После успешного редактирования перенаправляет на страницу деталей.
     """
 
+    permission_required = "ads.change_ads"
     template_name = "ads/ads-edit.html"
     model = Ads
     form_class = AdsForm
@@ -130,7 +134,7 @@ class AdsUpdateView(LoginRequiredMixin, UpdateView):
         return reverse("ads:ads_detail", kwargs={"pk": self.object.pk})
 
 
-class AdsDeleteView(LoginRequiredMixin, DeleteView):
+class AdsDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """
     Представление для удаления рекламной кампании.
 
@@ -138,6 +142,7 @@ class AdsDeleteView(LoginRequiredMixin, DeleteView):
     После успешного удаления перенаправляет на список всех рекламных кампаний.
     """
 
+    permission_required = "ads.delete_ads"
     template_name = "ads/ads-delete.html"
     model = Ads
     success_url = reverse_lazy("ads:ads_list")

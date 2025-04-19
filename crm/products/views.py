@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -68,7 +68,7 @@ class ProductViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Представление для создания новой услуги.
 
@@ -76,13 +76,14 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     После успешного создания перенаправляет на список услуг.
     """
 
+    permission_required = "products.add_product"
     template_name = "products/products-create.html"
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("products:products_list")
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Представление для редактирования существующей услуги.
 
@@ -90,6 +91,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     После успешного редактирования перенаправляет на страницу деталей услуги.
     """
 
+    permission_required = "products.change_product"
     template_name = "products/products-edit.html"
     model = Product
     form_class = ProductForm
@@ -101,7 +103,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """
     Представление для удаления услуги.
 
@@ -109,30 +111,33 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     После успешного удаления перенаправляет на список услуг.
     """
 
+    permission_required = "products.delete_product"
     template_name = "products/products-delete.html"
     model = Product
     success_url = reverse_lazy("products:products_list")
 
 
-class ProductsListView(LoginRequiredMixin, ListView):
+class ProductsListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Представление для отображения списка всех услуг.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "products.view_product"
     template_name = "products/products-list.html"
     model = Product
     context_object_name = "products"
 
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """
     Представление для отображения детальной информации об услуге.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "products.view_product"
     template_name = "products/products-detail.html"
     model = Product
     context_object_name = "object"

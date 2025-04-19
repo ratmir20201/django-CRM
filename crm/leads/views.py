@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -68,7 +68,7 @@ class LeadViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class LeadCreateView(LoginRequiredMixin, CreateView):
+class LeadCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Представление для создания нового потенциального клиента.
 
@@ -76,13 +76,14 @@ class LeadCreateView(LoginRequiredMixin, CreateView):
     После успешного создания перенаправляет на список потенциальных клиентов.
     """
 
+    permission_required = "leads.add_lead"
     template_name = "leads/leads-create.html"
     model = Lead
     form_class = LeadForm
     success_url = reverse_lazy("leads:leads_list")
 
 
-class LeadUpdateView(LoginRequiredMixin, UpdateView):
+class LeadUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Представление для редактирования существующего потенциального клиента.
 
@@ -91,6 +92,7 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
     потенциального клиента.
     """
 
+    permission_required = "leads.change_lead"
     template_name = "leads/leads-edit.html"
     model = Lead
     form_class = LeadForm
@@ -102,7 +104,7 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
         )
 
 
-class LeadDeleteView(LoginRequiredMixin, DeleteView):
+class LeadDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """
     Представление для удаления потенциального клиента.
 
@@ -110,30 +112,33 @@ class LeadDeleteView(LoginRequiredMixin, DeleteView):
     После успешного удаления перенаправляет на список потенциальных клиентов.
     """
 
+    permission_required = "leads.delete_lead"
     template_name = "leads/leads-delete.html"
     model = Lead
     success_url = reverse_lazy("leads:leads_list")
 
 
-class LeadsListView(LoginRequiredMixin, ListView):
+class LeadsListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Представление для отображения списка всех потенциальных клиентов.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "leads.view_lead"
     template_name = "leads/leads-list.html"
     queryset = Lead.objects.select_related("ad").filter(is_active=False).all()
     context_object_name = "leads"
 
 
-class LeadDetailView(LoginRequiredMixin, DetailView):
+class LeadDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """
     Представление для отображения детальной информации об потенциальном клиенте.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "leads.view_lead"
     template_name = "leads/leads-detail.html"
     model = Lead
     context_object_name = "object"

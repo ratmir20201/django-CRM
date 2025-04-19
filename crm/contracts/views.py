@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -68,31 +68,33 @@ class ContractViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class ContractsListView(LoginRequiredMixin, ListView):
+class ContractsListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Представление для отображения списка всех контрактов.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "contracts.view_contract"
     template_name = "contracts/contracts-list.html"
     queryset = Contract.objects.select_related("product").all()
     context_object_name = "contracts"
 
 
-class ContractDetailView(LoginRequiredMixin, DetailView):
+class ContractDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """
     Представление для отображения детальной информации о контракте.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "contracts.view_contract"
     template_name = "contracts/contracts-detail.html"
     model = Contract
     context_object_name = "object"
 
 
-class ContractCreateView(LoginRequiredMixin, CreateView):
+class ContractCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Представление для создания нового контракта.
 
@@ -100,13 +102,14 @@ class ContractCreateView(LoginRequiredMixin, CreateView):
     После успешного создания перенаправляет на список всех контрактов.
     """
 
+    permission_required = "contracts.add_contract"
     template_name = "contracts/contracts-create.html"
     model = Contract
     form_class = ContractForm
     success_url = reverse_lazy("contracts:contracts_list")
 
 
-class ContractUpdateView(LoginRequiredMixin, UpdateView):
+class ContractUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Представление для редактирования существующего контракта.
 
@@ -114,6 +117,7 @@ class ContractUpdateView(LoginRequiredMixin, UpdateView):
     После успешного редактирования перенаправляет на страницу деталей.
     """
 
+    permission_required = "contracts.change_contract"
     template_name = "contracts/contracts-edit.html"
     model = Contract
     form_class = ContractForm
@@ -122,7 +126,7 @@ class ContractUpdateView(LoginRequiredMixin, UpdateView):
         return reverse("contracts:contracts_detail", kwargs={"pk": self.object.pk})
 
 
-class ContractDeleteView(LoginRequiredMixin, DeleteView):
+class ContractDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """
     Представление для удаления контракта.
 
@@ -130,6 +134,7 @@ class ContractDeleteView(LoginRequiredMixin, DeleteView):
     После успешного удаления перенаправляет на список всех контрактов.
     """
 
+    permission_required = "contracts.delete_contract"
     template_name = "contracts/contracts-delete.html"
     model = Contract
     success_url = reverse_lazy("contracts:contracts_list")

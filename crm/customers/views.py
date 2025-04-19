@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -70,31 +70,33 @@ class CustomerViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-class CustomersListView(LoginRequiredMixin, ListView):
+class CustomersListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Представление для отображения списка всех активных клиентов.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "customers.view_customer"
     template_name = "customers/customers-list.html"
     queryset = Customer.objects.select_related("lead").select_related("contract").all()
     context_object_name = "customers"
 
 
-class CustomerDetailView(LoginRequiredMixin, DetailView):
+class CustomerDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """
     Представление для отображения детальной информации об активном клиенте.
 
     Доступно только для авторизованных пользователей.
     """
 
+    permission_required = "customers.view_customer"
     template_name = "customers/customers-detail.html"
     model = Customer
     context_object_name = "object"
 
 
-class CustomerCreateView(LoginRequiredMixin, CreateView):
+class CustomerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Представление для создания нового активного клиента.
 
@@ -102,6 +104,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
     После успешного создания перенаправляет на список всех активных клиентов.
     """
 
+    permission_required = "customers.add_customer"
     template_name = "customers/customers-create.html"
     model = Customer
     form_class = CustomerForm
@@ -124,7 +127,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-class CustomerUpdateView(LoginRequiredMixin, UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Представление для редактирования существующего активного клиента.
 
@@ -132,6 +135,7 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     После успешного редактирования перенаправляет на страницу деталей.
     """
 
+    permission_required = "customers.change_customer"
     template_name = "customers/customers-edit.html"
     model = Customer
     form_class = CustomerForm
@@ -166,7 +170,7 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
         return response
 
 
-class CustomerDeleteView(LoginRequiredMixin, DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     """
     Представление для удаления активного клиента.
 
@@ -174,6 +178,7 @@ class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     После успешного удаления перенаправляет на список всех активных клиентов.
     """
 
+    permission_required = "customers.delete_customer"
     template_name = "customers/customers-delete.html"
     model = Customer
     success_url = reverse_lazy("customers:customers_list")
