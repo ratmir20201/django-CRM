@@ -14,3 +14,21 @@ class LeadForm(forms.ModelForm):
             "email": "Email",
             "ad": "Рекламная компания",
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        first_name = cleaned_data.get("first_name")
+        last_name = cleaned_data.get("last_name")
+
+        if first_name and last_name:
+            exists = Lead.objects.filter(
+                first_name=first_name,
+                last_name=last_name
+            ).exists()
+
+            if exists:
+                raise forms.ValidationError(
+                    "Лид с таким именем и фамилией уже существует"
+                )
+
+        return cleaned_data
